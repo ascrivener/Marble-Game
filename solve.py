@@ -36,6 +36,15 @@ class State:
 
 		return children
 
+	def heuristic(self):
+		s = 0
+		for i in range(7):
+			for j in range(7):
+				if self.board[i][j] == 'X':
+					s += (i-3)**2 + (j-3)**2
+
+		return s
+
 	def __eq__(self,other):
 		if not isinstance(other,State):
 			return False
@@ -57,15 +66,14 @@ class State:
 
 
 
-
-
 def inRange(i,j):
 	return 0 <= i and i < 7 and 0 <= j and j < 7
 
 def search(state):
-	# print str(state)
+	print str(state)
+	print len(state_dict)
 	if state in state_dict:
-		# print "in dict"
+		# print str(state)
 		return state_dict[state]
 	elif (state.hasWon()):
 		print str(state)
@@ -73,8 +81,9 @@ def search(state):
 		return 1
 	else:
 		pathToWin = False
-		for child in state.getChildren():
-			if (search(child) == 1):
+		l = sorted(state.getChildren(),key=lambda state : state.heuristic())
+		for i in range(2):
+			if (len(l) > i and search(l[i]) == 1):
 				pathToWin = True
 				break
 		if pathToWin:
